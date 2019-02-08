@@ -1,3 +1,6 @@
+// createLevelLinkedList returs a vector containing lists of the nodes at every level of a tree. 
+// The method to accomplish this can be recursive or iterative
+
 #include <iostream>
 #include <queue>
 #include <list>
@@ -64,6 +67,7 @@ Node<T>* BsTree<T>::insert(T val, Node<T> *p){
 
 /*    4.3 List of Depths  */
 
+// Method 1 -> Recursive
 template <class T>
 void BsTree<T>::createLevelLinkedList(Node<T>*p, vector<list<Node<T>*>*> &listsVector, int level){
     if(p == NULL)
@@ -98,6 +102,44 @@ template <class T>
     return lists;
 }
 
+// Method 2 -> Iterative
+template <class T>
+vector<list<Node<T>*>*> BsTree<T>::createLevelLinkedList_method2(Node<T>*p){
+    vector<list<Node<T>*>*> result;
+
+    // visit the root
+    list<Node<T>*> *current = new list<Node<T>*>;
+
+    if(p != NULL)
+        current->push_back(p);
+
+    while(current->size() > 0){
+        result.push_back(current);  // add previous level
+        list<Node<T>*> *parents = current;
+        current = new list<Node<T>*>;
+
+        //for(auto it = parents->begin(); it != parents->end(); it++){
+         for(auto const &it : *parents){
+            // visit the children
+            if(it->left != NULL){
+                current->push_back(it->left);
+            }
+            if(it->right != NULL){
+                current->push_back(it->right);
+            }
+         }
+    };
+
+    // print result
+    for(int i = 0; i < result.size(); i++){
+        for(auto &i : *(result[i])){
+            cout << i->data << " ";
+        }
+        cout << endl;
+    }
+
+    return result;
+}
 
 int main(){
 
@@ -115,6 +157,8 @@ int main(){
     Node<int> *p = myTree.getRoot();
 
     myTree.createLevelLinkedList(p);
+    cout << endl;
+    myTree.createLevelLinkedList_method2(p);
 
     return 0;
 }
